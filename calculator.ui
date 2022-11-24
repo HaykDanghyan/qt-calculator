@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>546</width>
+    <width>566</width>
     <height>618</height>
    </rect>
   </property>
@@ -100,9 +100,12 @@ QPushButton:pressed {
       </property>
       <property name="font">
        <font>
-        <family>Sans</family>
-        <pointsize>26</pointsize>
+        <family>DejaVu Sans</family>
+        <pointsize>27</pointsize>
        </font>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
       </property>
       <property name="styleSheet">
        <string notr="true">QLineEdit {
@@ -656,7 +659,7 @@ QPushButton:pressed {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>546</width>
+     <width>566</width>
      <height>22</height>
     </rect>
    </property>

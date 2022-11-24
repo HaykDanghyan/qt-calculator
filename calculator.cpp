@@ -25,6 +25,7 @@ Calculator::Calculator(QWidget *parent)
         numButtons[i] = Calculator::findChild<QPushButton*>(buttonName);
         connect(numButtons[i], SIGNAL(released()), this, SLOT(NumPressed()));
     }
+    init();
     connect(ui->ButtonDiv, SIGNAL(released()),
             this, SLOT(MathButtonPressed()));
     connect(ui->ButtonMul, SIGNAL(released()),
@@ -43,7 +44,6 @@ Calculator::Calculator(QWidget *parent)
             this, SLOT(DelButton()));
     connect(ui->copyright, SIGNAL(released()),
             this, SLOT(copyRight()));
-    init();
 }
 
 Calculator::~Calculator() {
@@ -101,31 +101,44 @@ void Calculator::EqualButton() {
         ui->Display->setText("Syntax Error");
         return;
     }
-    if (utils::expression.indexOf('\u00F7') != -1) {
-
-    }
-    else if (utils::expression.indexOf('\u00D7') != -1) {
-
-    }
-    else if (utils::expression.indexOf('-') != -1) {
-
-    }
-    else if (utils::expression.indexOf('+') != -1) {
-        auto pos = utils::expression.indexOf('+');
-        auto leftArg = std::stod(utils::expression.toStdString().substr(0, pos));
-        auto rightArg = std::stod(utils::expression.
-           toStdString().substr(pos + 1));
-        solution = (this->*utils::map['+'])(leftArg, rightArg);
-    }
-    else if (utils::sqrtTrigger) {
-        QString number{};
-        for (int i = 1; i < utils::expression.length(); ++i) {
-            number[i - 1] = utils::expression[i];
+    if (utils::addTrigger || utils::subTrigger ||
+        utils::mulTrigger || utils::divTrigger || utils::sqrtTrigger) {
+        if (utils::addTrigger) {
+            std::string str = utils::expression.toStdString();
+            auto pos = str.find('+');
+            double leftArg = std::stod(str.substr(0, pos));
+            double rightArg = std::stod(str.substr(pos + 1));
+            solution = (this->*utils::map['+'])(leftArg, rightArg);
         }
-        double num = number.toDouble();
-        solution = std::sqrt(num);
-    } else {
-
+        if (utils::subTrigger) {
+            std::string str = utils::expression.toStdString();
+            auto pos = str.find('-');
+            double leftArg = std::stod(str.substr(0, pos));
+            double rightArg = std::stod(str.substr(pos + 1));
+            solution = (this->*utils::map['-'])(leftArg, rightArg);
+        }
+        if (utils::mulTrigger) {
+            std::string str = utils::expression.toStdString();
+            auto pos = str.find('\u00D7');
+            double leftArg = std::stod(str.substr(0, pos));
+            double rightArg = std::stod(str.substr(pos + 1));
+            solution = (this->*utils::map['*'])(leftArg, rightArg);
+        }
+        if (utils::divTrigger) {
+            std::string str = utils::expression.toStdString();
+            auto pos = str.find('\u00F7');
+            double leftArg = std::stod(str.substr(0, pos));
+            double rightArg = std::stod(str.substr(pos + 1));
+            solution = (this->*utils::map['/'])(leftArg, rightArg);
+        }
+        if (utils::sqrtTrigger) {
+            QString number{};
+            for (int i = 1; i < utils::expression.length(); ++i) {
+                number[i - 1] = utils::expression[i];
+            }
+            double num = number.toDouble();
+            solution = std::sqrt(num);
+        }
     }
     utils::expression = QString::number(solution);
     ui->Display->setText(utils::expression);
@@ -151,9 +164,9 @@ void Calculator::DelButton() {
 
 void Calculator::init() {
     utils::map['+'] = &Calculator::add;
-    utils::map['\u00D7'] = &Calculator::mul;
+    utils::map['*'] = &Calculator::mul;
     utils::map['-'] = &Calculator::sub;
-    utils::map['\u00F7'] = &Calculator::div;
+    utils::map['/'] = &Calculator::div;
 }
 
 double Calculator::add(double num1, double num2) {
@@ -173,5 +186,5 @@ double Calculator::div(double num1, double num2) {
 }
 
 void Calculator::copyRight() {
-    ui->Display->setText("Created by Danghyan Hayk");
+    ui->Display->setText("Created by Hayk Danghyan");
 }
